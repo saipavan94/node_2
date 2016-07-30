@@ -5,6 +5,7 @@ var obj={};
 var object={};
 var obj2={};
 var object2={};
+var m=0,y=0;
 function check(age){
   if(array.indexOf(age)==-1)
   {
@@ -64,12 +65,15 @@ function read(filename){
       };
     }
   }
-
+  m++;
+  if(m==3){
+    console.log(object);
   var file=JSON.stringify(object);
   fs.writeFile("part_1_json.json",file,"utf8",function(error){
     if(error)
     throw error;
     });
+  }
     });
 
 
@@ -161,20 +165,25 @@ function read(filename){
           obj2[line[arr[j]]].value=obj2[line[arr[j]]].value +parseInt(line2[arr[j]]);
           object2[line[arr[j]]]=
           {
+            level:line[arr[j]],
             Total:obj2[line[arr[j]]].value
           };
         }
       }
     }
-    console.log(object2);
+    y++;
+    if(y==3){
+      console.log(object2);
     var file=JSON.stringify(object2);
     fs.writeFile("part_2_json.json",file,"utf8",function(error){
       if(error)
       throw error;
       });
+    }
 
 });
 }
 read("India2011.csv");
 read("IndiaSC2011.csv");
 read("IndiaST2011.csv");
+//console.log(object);

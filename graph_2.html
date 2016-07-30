@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>graph</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <style media="screen">
+  .axis text {
+    font-size: 13px;
+  }
+  #one{
+    width: 800px;
+    margin: auto;
+  }
+  p{
+    text-align: center;
+  }
+
+    </style>
+  </head>
+  <body>
+    <div id="one">
+      <p>
+        <strong>Graph for Age-wise Literate population</strong>
+      </p>
+      <script>
+        var outerWidth=960;
+        var outerHeight=800;
+        var margin={left:80, top:30, right:30, bottom:500};
+        var barpadding=0.1;
+
+        var xcolumn="level";
+        var ycolumn="Total";
+
+        var innerWidth = outerWidth - margin.left - margin.right;
+        var innerHeight = outerHeight - margin.top - margin.bottom;
+
+        var svg = d3.select("#one").append("svg")
+        .attr("width",outerWidth)
+        .attr("height",outerHeight);
+
+        var g=svg.append("g")
+        .attr("transform","translate("+margin.left+","+margin.top+")");
+
+        var xaxisg=g.append("g")
+        .attr("class","x axis")
+        .attr("transform","translate(0,"+innerHeight+")");
+
+        var yaxisg=g.append("g");
+
+        var xscale= d3.scale.ordinal().rangeBands([0,innerWidth],barpadding);
+        var yscale= d3.scale.linear().range([innerHeight,0]);
+
+        var xaxis=d3.svg.axis().scale(xscale).orient("bottom");
+        var yaxis=d3.svg.axis().scale(yscale).orient("left");
+
+        function render(data){
+          data=d3.values(data);
+
+          for(var counter=0; counter < data.length; counter++)
+          {
+              data[counter].Total = + data[counter].Total;
+          }
+
+          //console.log(data);
+          xscale.domain(data.map(function(d){return d[xcolumn];}));
+          yscale.domain([0, d3.max(data, function(d) { return d.Total; })]).nice();
+
+          xaxisg.call(xaxis)
+          .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-75)" );
+
+
+          yaxisg.call(yaxis);
+
+          var bars=g.selectAll("rects").data(data);
+
+          bars.enter().append("rect")
+          .attr("width",xscale.rangeBand())
+          .attr("fill","red");
+
+          bars.attr("x",function(d){return xscale(d[xcolumn]);})
+          .attr("y",function(d){return yscale(d[ycolumn]);})
+          .attr("height",function(d){return innerHeight - yscale(d[ycolumn]);});
+
+          bars.exit().remove();
+        }
+
+        d3.json("part_2_json.json",render);
+      </script>
+    </div>
+  </body>
+</html>
