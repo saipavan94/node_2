@@ -72,7 +72,7 @@
           var bars=g.selectAll("rects").data(data);
 
           bars.enter().append("rect")
-          .attr("width",xscale.rangeBand());
+          .attr("width",xscale.rangeBand())
           .attr("fill","red");
 
           bars.attr("x",function(d){return xscale(d[xcolumn]);})
